@@ -1,23 +1,13 @@
-tälläne vaan :)
+typing test in terminal.
 
 HOW TO BUILD:
 
+git clone https://github.com/ilp0/typest
 cd /path/to/directory/
 make
 
-PLAYING:
+HOW TO USE:
 
-path/to/dir/bin/main
+run program from the root of project folder.
+bin/main
 
-have fun! :)tälläne vaan :)
-
-HOW TO BUILD:
-
-cd /path/to/directory/
-make
-
-PLAYING:
-
-path/to/dir/bin/main
-
-have fun! :)
