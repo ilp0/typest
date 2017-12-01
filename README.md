@@ -1,5 +1,14 @@
 Kirjoitusnopeustesti linux terminaalissa. Osa ohjelmoinnin kurssia. 
 
+Dependancies
+
+On debian based:
+    sudo apt-get install libncurses5-dev libncursesw5-dev
+On Arch based:
+    sudo pacman -S libncurses5-dev libncursesw5-dev
+or
+    yaourt -S libncurses5-dev libncursesw5-dev
+
 HOW TO BUILD:
 
     git clone https://github.com/ilp0/typest

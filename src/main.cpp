@@ -17,7 +17,7 @@ int Menu(void);
 int Highscores(void);
 int writeHighscore(char lang);
 
-static const int wordcount_fi = 1281, wordcount_en = 5421;
+static const int wordcount_fi = 1113, wordcount_en = 5421;
 string wordlistEng[wordcount_en];
 string wordlistFin[wordcount_fi];
 
