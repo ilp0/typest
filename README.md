@@ -3,11 +3,17 @@ Kirjoitusnopeustesti linux terminaalissa. Osa ohjelmoinnin kurssia.
 Dependancies
 
 On debian based:
+
     sudo apt-get install libncurses5-dev libncursesw5-dev wget
+
 On Arch based:
+
     sudo pacman -S libncurses5-dev libncursesw5-dev wget
+
 or
+
     yaourt -S libncurses5-dev libncursesw5-dev wget
+    
 
 HOW TO BUILD:
 
