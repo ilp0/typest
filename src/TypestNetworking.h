@@ -1,5 +1,3 @@
-
-
 #ifndef TypestNetworking
 #define TypestNetworking
 #include <iostream>

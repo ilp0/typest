@@ -18,15 +18,17 @@ int GetWebHighscores(){
 	system("wget http://34.241.121.194/typest/typest_get.php");
 	//printtaa
 	printw("              TOP 10 ONLINE SCORES\n");
-	printw("Language  -  Name -  WPM  -  Accuracy  -  Score  -  Timestamp      \n");
-	printw("--------------------------------------------------------------\n");
+	printw("  Language -   Name   - WPM -  Accuracy  -  Score  -    Timestamp\n");
+	printw("---------------------------------------------------------------------------\n");
 	ifstream scoreFile ("typest_get.php");
-	while (!scoreFile.eof()){
+	for (int i = 1; !scoreFile.eof() || i < 11; i++) {
+		printw("%i", i);
+		printw(". ");
 		getline(scoreFile,line);
 		printw(line.c_str());
 		printw("\n");
 	}
-	printw("--------------------------------------------------------------\n");
+	printw("---------------------------------------------------------------------------\n");
 	//sulkee tiedoston
 	scoreFile.close();
 	//poistaa haetun tiedoston.

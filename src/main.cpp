@@ -236,8 +236,9 @@ int Menu(){
 	napms(100);
 	
 	}
+	move(10,9);
 	if (currentUser.name == ""){
-		printw("\n         Please enter your username(max. 8 characters):\n");
+		printw("Please enter your username(max. 8 characters):\n");
 		move(11,9);
 		char name[100];
 		getstr(name);
@@ -249,13 +250,14 @@ int Menu(){
 	printw("              ----------------\n");
 	printw("              |     MENU     |\n");
 	printw("              ----------------\n");
-	printw("              1. PLAY TYPEST\n");
+	printw("              1. PLAY TYPEST (default)\n");
 	printw("              2. VIEW LOCAL HIGHSCORE\n");
 	printw("              3. VIEW ONLINE HIGHSCORES");
 	char menu = getch();
 	switch (menu){
 		case '1': return 0;
 		case '2': Highscores();
+		//katso typestnetworking.cpp
 		case '3': GetWebHighscores();
 	}
 }
@@ -304,13 +306,12 @@ int writeHighscore(char lang) {
 	highscoreFile << hsString <<endl;
 	//sulkee tiedoston
 	highscoreFile.close();
-	//lataamalla tiedoston näillä parametreillä lähettää servulle highscoren.
-
 	clear();
 	//haluatko lähettää scoret servulle?
 	printw("Would you like to upload score to the online scoreboard? (y/n(default))");
 	char temp = getch();
 	if (temp == 'y' || temp == 'Y'){
+		//katso typestnetworking.cpp
 		SendWebHighscores(language, currentUser.name, wpmStr, accStr, scoreStr);
 	}
 	
