@@ -23,7 +23,7 @@ string wordlistEng[wordcount_en];
 string wordlistFin[wordcount_fi];
 
 struct user{
-	string name;
+	string name = "";
 	double wpm = 0;
 	double accuracy = 0;
 	double score = 0;
@@ -45,7 +45,7 @@ int main(){
 	move(0,0); 
 	Menu();
 	clear(); 
-	printw("Select your word list language:\n 1 = English(default), 2 = Finnish: ");
+	printw("Select your wordlist language:\n 1 = English(default), 2 = Finnish: ");
 	char lang = getch();
 	Wordlist(lang);
 	StartTypingTest(lang);
@@ -175,10 +175,12 @@ int StartTypingTest(char lang){
 	clear();
 	if(save == 'y' || save == 'Y'){ 
 	writeHighscore(lang);
+	clear();
 	printw("Score saved!\n");
 	}
 
 	getch();
+	clear();
 	return 0;
 }
 
@@ -192,7 +194,7 @@ int Restart(void){
 
 int Wordlist(char lang){
 	if(lang == '2') {	
-		ifstream file("wordlist_fi.txt");
+		ifstream file(".wordlist_fi.txt");
 		if(file.is_open())
 		{
 			for(int i = 0; i < wordcount_fi; ++i)
@@ -201,7 +203,7 @@ int Wordlist(char lang){
 			}
 		}
 	} else {
-		ifstream file("wordlist_en.txt");
+		ifstream file(".wordlist_en.txt");
 		if(file.is_open())
 		{
 			for(int i = 0; i < wordcount_en; ++i)
@@ -237,12 +239,22 @@ int Menu(){
 	napms(100);
 	
 	}
-
+	if (currentUser.name == ""){
+		printw("\n         Please enter your username(max. 8 characters):\n");
+		move(11,9);
+		char name[100];
+		getstr(name);
+		currentUser.name = name;
+		move (10,0);
+		printw("                                              \n                               ");
+		move(10,0);
+	}
 	printw("              ----------------\n");
 	printw("              |     MENU     |\n");
 	printw("              ----------------\n");
 	printw("              1. PLAY TYPEST\n");
-	printw("              2. VIEW LOCAL HIGHSCORE");
+	printw("              2. VIEW LOCAL HIGHSCORE\n");
+	printw("              3. VIEW ONLINE HIGHSCORES");
 	char menu = getch();
 	switch (menu){
 		case '1': return 0;
@@ -256,11 +268,12 @@ int Highscores(){
 	ifstream file;
 	file.open(".highscores.txt");
 	string highscore;
-	
+	printw("               TOP 10 LOCAL SCORES\n");
 	printw("Language -  WPM  -  Time  -  Accuracy  -  Score\n");
 	printw("-----------------------------------------------\n");
 	printw("\n");
-	while (!file.eof()){
+
+	for (int i = 0; !file.eof() || i == 10; i++){
 		getline(file,highscore);
 		printw(highscore.c_str());
 		printw("\n");
@@ -277,12 +290,16 @@ int GetWebHighscores(){
 	//hakee servulta highscoret
 	system("wget http://34.241.121.194/typest/typest_get.php");
 	//printtaa
+	printw("              TOP 10 ONLINE SCORES\n");
+	printw("Language  -  Name -  WPM  -  Accuracy  -  Score  -  Timestamp      \n");
+	printw("--------------------------------------------------------------\n");
 	ifstream scoreFile ("typest_get.php");
 	while (!scoreFile.eof()){
 		getline(scoreFile,line);
 		printw(line.c_str());
 		printw("\n");
 	}
+	printw("--------------------------------------------------------------\n");
 	//sulkee tiedoston
 	scoreFile.close();
 	//poistaa haetun tiedoston.
@@ -322,6 +339,7 @@ int writeHighscore(char lang) {
 	printw("Would you like to upload score to the online scoreboard? (y/n(default))");
 	char temp = getch();
 	if (temp == 'y' || temp == 'Y'){
+
 		//tee url scoreista yms.
 		//php puolella $_GET
 		string command = "wget \"http://34.241.121.194/typest/typest_send.php?language=";
@@ -332,17 +350,23 @@ int writeHighscore(char lang) {
 		command += wpmStr;
 		command += "&accuracy=";
 		command += accStr;
-		command += "&score=\"";
+		command += "&score=";
 		command += scoreStr;
+		command += "&curTime=";
+		//hae nykyinen aika avainta varten
+		system_clock::time_point p = system_clock::now();
+		time_t t = system_clock::to_time_t(p);
+		string curTime = ctime(&t);
+		curTime.erase(0,14);
+		command += curTime;
+		command += "\"";
 		//lähetä wgetti
 		system(command.c_str());
 		//poista ladattu tiedosto
-		command.erase(0, 36);
-		command = "rm " + command;
+		command = "rm typest_send.php?*";
 		system(command.c_str());
 		refresh();
 	}
 	
 	return 0;
 }
-
