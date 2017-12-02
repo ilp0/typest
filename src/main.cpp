@@ -16,12 +16,14 @@ int Wordlist(char lang);
 int Menu(void);
 int Highscores(void);
 int writeHighscore(char lang);
+int GetWebHighscores(void);
 
 static const int wordcount_fi = 1113, wordcount_en = 5421;
 string wordlistEng[wordcount_en];
 string wordlistFin[wordcount_fi];
 
 struct user{
+	string name;
 	double wpm = 0;
 	double accuracy = 0;
 	double score = 0;
@@ -55,7 +57,7 @@ int StartTypingTest(char lang){
 
 	clear();
 	move(0,0);
-	printw("Type 50 words as fast as possible. \nPress any key to start typest");
+	printw("Type 30 words as fast as possible. \nPress any key to start typest");
 	getch();
 	clear();
 	move(5,5);
@@ -245,6 +247,7 @@ int Menu(){
 	switch (menu){
 		case '1': return 0;
 		case '2': Highscores();
+		case '3': GetWebHighscores();
 	}
 }
 
@@ -268,10 +271,34 @@ int Highscores(){
 	Menu();
 }
 
+int GetWebHighscores(){
+	clear();
+	string line;
+	//hakee servulta highscoret
+	system("wget http://34.241.121.194/typest/typest_get.php");
+	//printtaa
+	ifstream scoreFile ("typest_get.php");
+	while (!scoreFile.eof()){
+		getline(scoreFile,line);
+		printw(line.c_str());
+		printw("\n");
+	}
+	//sulkee tiedoston
+	scoreFile.close();
+	//poistaa haetun tiedoston.
+	system("rm typest_get.php");
+	refresh();
+	getch();
+	//takaisin menuun
+	Menu();
+}
+
 int writeHighscore(char lang) {
+	//avaa highscoretiedosto
 	ofstream highscoreFile;
 	string hsString;
 	highscoreFile.open(".highscores.txt", ios::app);
+	//muuta numerot stringiksi
 	auto accStr = to_string(currentUser.accuracy);
 	auto wpmStr = to_string(currentUser.wpm);
 	auto scoreStr = to_string(currentUser.score);
@@ -282,8 +309,40 @@ int writeHighscore(char lang) {
 	} else{
 		language = "English";
 	}
+	//formatointia
 	hsString = language + " " + wpmStr + " " + timeStr + " " + accStr + " " + scoreStr;
+	//kirjoittaa tiedostoon formatoidun stringin
 	highscoreFile << hsString <<endl;
+	//sulkee tiedoston
 	highscoreFile.close();
+	//lataamalla tiedoston näillä parametreillä lähettää servulle highscoren.
+
+	clear();
+	//haluatko lähettää scoret servulle?
+	printw("Would you like to upload score to the online scoreboard? (y/n(default))");
+	char temp = getch();
+	if (temp == 'y' || temp == 'Y'){
+		//tee url scoreista yms.
+		//php puolella $_GET
+		string command = "wget \"http://34.241.121.194/typest/typest_send.php?language=";
+		command += language;
+		command += "&name=";
+		command += currentUser.name;
+		command += "&wpm=";
+		command += wpmStr;
+		command += "&accuracy=";
+		command += accStr;
+		command += "&score=\"";
+		command += scoreStr;
+		//lähetä wgetti
+		system(command.c_str());
+		//poista ladattu tiedosto
+		command.erase(0, 36);
+		command = "rm " + command;
+		system(command.c_str());
+		refresh();
+	}
+	
+	return 0;
 }
 
