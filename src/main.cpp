@@ -236,9 +236,9 @@ int Menu(){
 	napms(100);
 	
 	}
-	move(10,9);
+	move(10,0);
 	if (currentUser.name == ""){
-		printw("Please enter your username(max. 8 characters):\n");
+		printw("         Please enter your username(max. 8 characters):\n");
 		move(11,9);
 		char name[100];
 		getstr(name);
@@ -301,7 +301,7 @@ int writeHighscore(char lang) {
 		language = "English";
 	}
 	//formatointia
-	hsString = language + " " + wpmStr + " " + timeStr + " " + accStr + " " + scoreStr;
+	hsString = language + "   " + wpmStr + " " + timeStr + " " + accStr + " " + scoreStr;
 	//kirjoittaa tiedostoon formatoidun stringin
 	highscoreFile << hsString <<endl;
 	//sulkee tiedoston
