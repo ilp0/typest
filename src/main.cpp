@@ -6,17 +6,10 @@
 #include <vector>
 #include <chrono>
 #include <ctime>
+#include "TypestNetworking.h"
 
 using namespace std;
 using namespace chrono;
-
-int StartTypingTest(char lang);
-int Restart(void);
-int Wordlist(char lang);
-int Menu(void);
-int Highscores(void);
-int writeHighscore(char lang);
-int GetWebHighscores(void);
 
 static const int wordcount_fi = 1113, wordcount_en = 5421;
 string wordlistEng[wordcount_en];
@@ -201,6 +194,8 @@ int Wordlist(char lang){
 			{
 				file >> wordlistFin[i];
 			}
+		} else {
+			printw("Wordlist not found, please run the program from root of project folder.");
 		}
 	} else {
 		ifstream file(".wordlist_en.txt");
@@ -210,6 +205,8 @@ int Wordlist(char lang){
 			{
 				file >> wordlistEng[i];
 			}
+		} else {
+			printw("Wordlist not found, please run the program from root of project folder.");
 		}
 	}	
 }
@@ -284,31 +281,6 @@ int Highscores(){
 	Menu();
 }
 
-int GetWebHighscores(){
-	clear();
-	string line;
-	//hakee servulta highscoret
-	system("wget http://34.241.121.194/typest/typest_get.php");
-	//printtaa
-	printw("              TOP 10 ONLINE SCORES\n");
-	printw("Language  -  Name -  WPM  -  Accuracy  -  Score  -  Timestamp      \n");
-	printw("--------------------------------------------------------------\n");
-	ifstream scoreFile ("typest_get.php");
-	while (!scoreFile.eof()){
-		getline(scoreFile,line);
-		printw(line.c_str());
-		printw("\n");
-	}
-	printw("--------------------------------------------------------------\n");
-	//sulkee tiedoston
-	scoreFile.close();
-	//poistaa haetun tiedoston.
-	system("rm typest_get.php");
-	refresh();
-	getch();
-	//takaisin menuun
-	Menu();
-}
 
 int writeHighscore(char lang) {
 	//avaa highscoretiedosto
@@ -339,33 +311,7 @@ int writeHighscore(char lang) {
 	printw("Would you like to upload score to the online scoreboard? (y/n(default))");
 	char temp = getch();
 	if (temp == 'y' || temp == 'Y'){
-
-		//tee url scoreista yms.
-		//php puolella $_GET
-		string command = "wget \"http://34.241.121.194/typest/typest_send.php?language=";
-		command += language;
-		command += "&name=";
-		command += currentUser.name;
-		command += "&wpm=";
-		command += wpmStr;
-		command += "&accuracy=";
-		command += accStr;
-		command += "&score=";
-		command += scoreStr;
-		command += "&curTime=";
-		//hae nykyinen aika avainta varten
-		system_clock::time_point p = system_clock::now();
-		time_t t = system_clock::to_time_t(p);
-		string curTime = ctime(&t);
-		curTime.erase(0,14);
-		command += curTime;
-		command += "\"";
-		//lähetä wgetti
-		system(command.c_str());
-		//poista ladattu tiedosto
-		command = "rm typest_send.php?*";
-		system(command.c_str());
-		refresh();
+		SendWebHighscores(language, currentUser.name, wpmStr, accStr, scoreStr);
 	}
 	
 	return 0;
