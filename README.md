@@ -1,6 +1,6 @@
 Typing test in linux terminal. Project for a programming course at JAMK University of Applied Sciences. 
 
-##Dependencies
+## Dependencies
 
 On debian based:
 
@@ -15,13 +15,13 @@ or
     yaourt -S libncurses5-dev libncursesw5-dev wget
 
 
-##HOW TO BUILD:
+## HOW TO BUILD:
 
     git clone https://github.com/ilp0/typest
     cd typest/
     make
 
-##HOW TO PLAY:
+## HOW TO PLAY:
 
 run program from the root of project folder.
 
