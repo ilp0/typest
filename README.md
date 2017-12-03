@@ -2,6 +2,8 @@ Typing test in linux terminal. Project for a programming course at JAMK Universi
 
 ## Dependencies
 
+Project uses ncurses5
+
 On debian based:
 
     sudo apt-get install libncurses5-dev libncursesw5-dev wget
