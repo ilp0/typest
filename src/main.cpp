@@ -12,6 +12,7 @@ using namespace std;
 using namespace chrono;
 
 static const int wordcount_fi = 1113, wordcount_en = 5421;
+
 string wordlistEng[wordcount_en];
 string wordlistFin[wordcount_fi];
 
@@ -30,8 +31,12 @@ int main(){
 	setlocale(LC_ALL, "");
 	//inittaa ncurses ikkunan
 	initscr();
-	//inittaa värien käytön
+	
+	//inittaa värien käytön ja laiteaan muutama presetti
 	start_color();
+	init_pair(1,COLOR_RED,COLOR_BLACK);
+	init_pair(2,COLOR_GREEN,COLOR_BLACK);	
+	init_pair(0, COLOR_WHITE,COLOR_BLACK);
 	//päivittää ikkunan
 	refresh();
 	//liikuttaa kursorin kohtaan x = 0, y = 0
@@ -41,6 +46,7 @@ int main(){
 	printw("Thanks for playing! Goodbye!"); 
 	refresh();
 	napms(2000);
+	endwin();
 	return 0;
 }
 
@@ -57,7 +63,6 @@ int StartTypingTest(){
 	move(5,5);
 	refresh();
 
-	int currentX = 0;
 	char tempCh;
 	string tempWrittenWord, tempword, tempNextWord;
 	int score = 0;
@@ -66,6 +71,7 @@ int StartTypingTest(){
 	int totalChars = 0;
 	float time = 0;
 	int correctedLetters = 0;
+	int x = 0, y = 0;
 	//aloita ajastin
 	auto start = high_resolution_clock::now();
 	
@@ -76,10 +82,13 @@ int StartTypingTest(){
 		//HAE RANDOM SANA WORDLISTISTÄ
 		if(lang == '2'){
 			if(i == 0){
+			//jos  on ensimmäinen sana, generoi uusi sanan tempwordiksi
 			tempword =  wordlistFin[rand()%wordcount_fi] + " ";
 			} else {
+			//muutoin siirrä tempNextWord tempwordiksi
 			tempword = tempNextWord;
 			}
+			//ja generoi uusi nextword
 			tempNextWord = wordlistFin[rand()%wordcount_fi] + " ";
 		} else {
 			if(i == 0){
@@ -90,41 +99,60 @@ int StartTypingTest(){
 			tempNextWord = wordlistEng[rand()%wordcount_en] + " ";
 		}
 		fullScore += tempword.length();
-		clear();
+		move(1,0);
+		clrtoeol();
 		move(0,0);
+		clrtoeol();
 		refresh();
+		//printtaa sanan
 		printw(tempword.c_str());
 		printw(" ");
+		//jos ei ole viimeinen sana seuraavana, printtaa seuraavan sana
 		if(i < 29) printw(tempNextWord.c_str());
 		move (1,0);
+		//idikaattori montako sanaa vielä jäljellä
 		printw("Words remaining: ");
 		printw("%i", 30-i);
 		move(0,0);
 		//HAE CHAREJA KUNNES KÄYTTÄJÄ PAINAA SPACEA
 		 for (int a = 0; tempCh != ' ';a++) {
+			//tyhjennä tempCh 
             tempCh = '\0';
+			//hae näppäin inputtia
             tempCh = getch();
-			if(tempCh == tempword[a]) 
 			totalChars++;
-            currentX++;
-            tempWrittenWord = tempWrittenWord + tempCh;
+            tempWrittenWord += tempCh;
 			if (tempCh == 127 || tempCh	== 8){
 				tempWrittenWord[a] == '\0';
-				if (currentX > 1) currentX -= 2;
-				move(0, currentX);
-				if (a > 1) a -= 2;
+				if (a > 1) a-=2;
+				move(0, a+1);
+				printw("%c", tempword[a]);
+				move(0,a);
+				refresh();
 				totalChars--;
 				correctedLetters++;
 			}
+
 		}
+		if(y == 10) {
+			x += 15;
+			y = 0;
+		}
+		move(y+2, x);
 		for (int c = 0; c < tempword.size(); c++){
 			if (tempword[c] == tempWrittenWord[c]) {
+				attron(COLOR_PAIR(2));
 				score++;
 			} else {
+				attron(COLOR_PAIR(1));
 				wrongLetters++;
             }
+			printw("%c", tempword[c]);
+			attroff(COLOR_PAIR(2));
+			attroff(COLOR_PAIR(1));
+			refresh();
         }
-		currentX = 0;
+		y++;
 		tempCh = '\0';
 		tempword = "";
 		tempWrittenWord = "";
@@ -141,7 +169,7 @@ int StartTypingTest(){
 	currentUser.accuracy = accuracy;
 	currentUser.score = (totalChars - wrongLetters) / (time / 60) * accuracy;
 	currentUser.time = time;
-	//kerro pelaajalle score ja kirjoitetaan tulos tiedostoon:
+	//kerro pelaajalle score
 	clear();
 	refresh();
 	printw("       -------------\n");
@@ -181,7 +209,7 @@ int StartTypingTest(){
 	printw("TYPEST SCORE: ");
 	printw("%.0f", currentUser.score);
 	printw("\n-----------------------------------\n");
-	refresh()
+	refresh();
 	napms(500);
 	printw("RANK: ");
 	napms(1000);
@@ -192,11 +220,13 @@ int StartTypingTest(){
 	if (currentUser.score <= 45000 && currentUser.score > 35000) printw("A");
 	if (currentUser.score <= 55000 && currentUser.score > 45000) printw("S");
 	if (currentUser.score > 55000) printw("SS");
+	printw("\n--------------------------------------\n");
 	refresh();
-	napms(3000);
+	napms(1000);
 	printw("\nPress any key to continue");
 	getch();
 	clear();
+	//haluatko tallentaa scoren?
 	printw("Would you like to save the score?(y/n)\n");
 	char save = getch();
 	clear();
@@ -209,6 +239,7 @@ int StartTypingTest(){
 }
 
 int Restart(void){
+	//haluatko mennä takaisn menuun vai lopettaa pelaamisen?
 	char temp;
 	printw("Go back to menu?(y/n)\n");
 	temp = getch();
@@ -244,7 +275,7 @@ int Wordlist(char lang){
 
 int Menu(){
 	move(0,0);
-	
+	//aloita riviltä 15 ja printtaa hieno 10fps animaatio
 	for (int i = 15; i != 0; i--){
 	clear();
 	move(i,i);	
@@ -268,12 +299,14 @@ int Menu(){
 	
 	}
 	move(10,0);
+	//kysy nimeä
 	if (currentUser.name == ""){
 		printw("         Please enter your username(max. 8 characters):\n");
 		move(11,9);
 		char name[100];
 		getstr(name);
 		currentUser.name = name;
+		//printtaa menu
 		move (10,0);
 		printw("                                              \n                               ");
 		move(10,0);
@@ -286,8 +319,8 @@ int Menu(){
 	printw("              3. VIEW ONLINE HIGHSCORES\n");
 	printw("              0. QUIT");
 	move(13,15);
-	char menu;
-	menu = getch();
+	//hae inputtia
+	char menu = getch();
 	switch (menu){
 		case '1': StartTypingTest();
 				break;
@@ -305,15 +338,17 @@ int Menu(){
 
 int Highscores(){
 	clear();
+	//avaa tiedosto
 	ifstream file;
 	file.open(".highscores.txt");
 	string highscore;
+	//printtaa "laatikko" scoreille
 	printw("               TOP 10 LOCAL SCORES\n");
 	printw("Language -  WPM  -  Time  -  Accuracy  -  Score\n");
 	printw("-----------------------------------------------\n");
 	printw("\n");
-
-	for (int i = 0; !file.eof() || i == 10; i++){
+	//hae max 10 riviä scoreja
+	for (int i = 0; !file.eof() && i == 10; i++){
 		getline(file,highscore);
 		printw(highscore.c_str());
 		printw("\n");
@@ -321,6 +356,7 @@ int Highscores(){
 	printw("-----------------------------------------------");
 	printw("\nPress any key to get back to menu.\n");
 	getch();
+	//avaa taas menu
 	Menu();
 }
 
