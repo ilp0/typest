@@ -13,12 +13,12 @@ On Arch based:
 or
 
     yaourt -S libncurses5-dev libncursesw5-dev wget
-    
+
 
 HOW TO BUILD:
 
     git clone https://github.com/ilp0/typest
-    cd /path/to/directory/
+    cd typest/
     make
 
 HOW TO USE:

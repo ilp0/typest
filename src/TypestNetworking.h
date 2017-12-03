@@ -4,7 +4,7 @@
 #include <string>
 #include "string.h"
 int GetWebHighscores();
-int StartTypingTest(char lang);
+int StartTypingTest();
 int Restart(void);
 int Wordlist(char lang);
 int Menu(void);

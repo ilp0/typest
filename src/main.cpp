@@ -37,17 +37,18 @@ int main(){
 	//liikuttaa kursorin kohtaan x = 0, y = 0
 	move(0,0); 
 	Menu();
-	clear(); 
-	printw("Select your wordlist language:\n 1 = English(default), 2 = Finnish: ");
-	char lang = getch();
-	Wordlist(lang);
-	StartTypingTest(lang);
-	Restart();
+	clear();
+	printw("Thanks for playing! Goodbye!"); 
+	refresh();
+	napms(2000);
 	return 0;
 }
 
-int StartTypingTest(char lang){
-
+int StartTypingTest(){
+	clear();
+	printw("Select your wordlist language:\n 1 = English(default), 2 = Finnish: ");
+	char lang = getch();
+	Wordlist(lang);
 	clear();
 	move(0,0);
 	printw("Type 30 words as fast as possible. \nPress any key to start typest");
@@ -96,12 +97,14 @@ int StartTypingTest(char lang){
 		printw(" ");
 		if(i < 29) printw(tempNextWord.c_str());
 		move (1,0);
-		printw("%i", i);
+		printw("Words remaining: ");
+		printw("%i", 30-i);
 		move(0,0);
 		//HAE CHAREJA KUNNES KÄYTTÄJÄ PAINAA SPACEA
 		 for (int a = 0; tempCh != ' ';a++) {
             tempCh = '\0';
             tempCh = getch();
+			if(tempCh == tempword[a]) 
 			totalChars++;
             currentX++;
             tempWrittenWord = tempWrittenWord + tempCh;
@@ -127,6 +130,7 @@ int StartTypingTest(char lang){
 		tempWrittenWord = "";
 	}
 	wrongLetters -= correctedLetters;
+	totalChars = wrongLetters + score;
 	//lopeta ajastin
     auto end = high_resolution_clock::now();
     time = duration_cast<seconds>(end - start).count();
@@ -137,29 +141,59 @@ int StartTypingTest(char lang){
 	currentUser.accuracy = accuracy;
 	currentUser.score = (totalChars - wrongLetters) / (time / 60) * accuracy;
 	currentUser.time = time;
-	getch();
 	//kerro pelaajalle score ja kirjoitetaan tulos tiedostoon:
 	clear();
 	refresh();
 	printw("       -------------\n");
 	printw("       |  RESULTS  |\n");
 	printw("       -------------\n");
+	refresh();
+	napms(300);
 	printw("\nIt took you............");
 	printw("%.0f", time);
 	printw(" seconds");
+	refresh();
+	napms(300);
 	printw("\nTotal letters typed....");
 	printw("%i", totalChars);
+	refresh();
+	napms(300);
 	printw("\nCorrect letters........");
 	printw("%i", score);
+	refresh();
+	napms(300);
 	printw("\nIncorrect letters......");
 	printw("%i", wrongLetters);
+	refresh();
+	napms(300);
 	printw("\nWPM....................");
 	printw("%.2f", grossWPM);
+	refresh();
+	napms(300);
 	printw("\nAccuracy...............");
+	refresh();
+	napms(300);
 	printw("%.2f", accuracy);
-	printw("percent\n");
-	printw("\nTYPEST SCORE: ");
+	printw(" percent\n");
+	refresh();
+	napms(300);
+	printw("\n-----------------------------------\n");
+	printw("TYPEST SCORE: ");
 	printw("%.0f", currentUser.score);
+	printw("\n-----------------------------------\n");
+	refresh()
+	napms(500);
+	printw("RANK: ");
+	napms(1000);
+	if (currentUser.score <= 10000) printw("F");
+	if (currentUser.score <= 20000 && currentUser.score > 10000) printw("D");
+	if (currentUser.score <= 27000 && currentUser.score > 20000) printw("C");
+	if (currentUser.score <= 35000 && currentUser.score > 27000) printw("B");
+	if (currentUser.score <= 45000 && currentUser.score > 35000) printw("A");
+	if (currentUser.score <= 55000 && currentUser.score > 45000) printw("S");
+	if (currentUser.score > 55000) printw("SS");
+	refresh();
+	napms(3000);
 	printw("\nPress any key to continue");
 	getch();
 	clear();
@@ -171,10 +205,7 @@ int StartTypingTest(char lang){
 	clear();
 	printw("Score saved!\n");
 	}
-
-	getch();
-	clear();
-	return 0;
+	Restart();
 }
 
 int Restart(void){
@@ -252,13 +283,23 @@ int Menu(){
 	printw("              ----------------\n");
 	printw("              1. PLAY TYPEST (default)\n");
 	printw("              2. VIEW LOCAL HIGHSCORE\n");
-	printw("              3. VIEW ONLINE HIGHSCORES");
-	char menu = getch();
+	printw("              3. VIEW ONLINE HIGHSCORES\n");
+	printw("              0. QUIT");
+	move(13,15);
+	char menu;
+	menu = getch();
 	switch (menu){
-		case '1': return 0;
+		case '1': StartTypingTest();
+				break;
 		case '2': Highscores();
+				break;
 		//katso typestnetworking.cpp
 		case '3': GetWebHighscores();
+				break;
+		case '0': return 0;
+				break;
+		default: StartTypingTest();
+				break;
 	}
 }
 
@@ -278,7 +319,7 @@ int Highscores(){
 		printw("\n");
 	}
 	printw("-----------------------------------------------");
-	printw("\n  Press any key to get back to menu.\n");
+	printw("\nPress any key to get back to menu.\n");
 	getch();
 	Menu();
 }
