@@ -152,7 +152,7 @@ int StartTypingTest(){
 		for (int c = 0; c < tempword.size(); c++){
 			if (tempword[c] == tempWrittenWord[c]) {
 				attron(COLOR_PAIR(2));
-				score++;
+				//score++;
 			} else {
 				attron(COLOR_PAIR(1));
 				wrongLetters++;
@@ -168,7 +168,6 @@ int StartTypingTest(){
 		tempCh = '\0';
 	}
 	wrongLetters -= correctedLetters;
-	totalChars = wrongLetters + score;
 	//lopeta ajastin
     auto end = high_resolution_clock::now();
     time = duration_cast<seconds>(end - start).count();
