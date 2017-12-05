@@ -1,7 +1,7 @@
 SOURCES = src/TypestNetworking.cpp src/main.cpp 
 
-bin/main: bin/main.o bin/TypestNetworking.o
-	g++ -I -g -o bin/main bin/main.o bin/TypestNetworking.o -std=c++11 -Wall -pedantic -lncursesw -ltinfo -D_GLIBCXX_USE_CXX11_ABI=0
+bin/main.sh: bin/main.o bin/TypestNetworking.o
+	g++ -I -g -o bin/main.sh bin/main.o bin/TypestNetworking.o -std=c++11 -Wall -pedantic -lncursesw -ltinfo -D_GLIBCXX_USE_CXX11_ABI=0
 
 bin/main.o: $(SOURCES)
 	mkdir -p bin
