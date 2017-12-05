@@ -1,11 +1,3 @@
-#include <iostream>
-#include <ncurses.h>
-#include <string>
-#include "string.h"
-#include <fstream>
-#include <vector>
-#include <chrono>
-#include <ctime>
 #include "TypestNetworking.h"
 
 using namespace std;

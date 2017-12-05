@@ -1,11 +1,3 @@
-#include <iostream>
-#include <ncurses.h>
-#include <string>
-#include "string.h"
-#include <fstream>
-#include <vector>
-#include <chrono>
-#include <ctime>
 #include "TypestNetworking.h"
 
 using namespace std;
@@ -64,14 +56,19 @@ int StartTypingTest(){
 	refresh();
 
 	char tempCh;
+	
 	string tempWrittenWord, tempword, tempNextWord;
-	int score = 0;
-	int wrongLetters = 0;
-	int fullScore = 0;
-	int totalChars = 0;
+	int score = 0, wrongLetters = 0, fullScore = 0, totalChars = 0, correctedLetters = 0, x = 0, y = 0, curX = 0;
+	/*
+		
+		int wrongLetters = 0;
+		int fullScore = 0;
+		int totalChars = 0;
+		int curX;
+		int correctedLetters = 0;
+		int x = 0, y = 0;
+		*/
 	float time = 0;
-	int correctedLetters = 0;
-	int x = 0, y = 0;
 	//aloita ajastin
 	auto start = high_resolution_clock::now();
 	
@@ -121,16 +118,29 @@ int StartTypingTest(){
 			//hae näppäin inputtia
             tempCh = getch();
 			totalChars++;
-            tempWrittenWord += tempCh;
-			if (tempCh == 127 || tempCh	== 8){
-				tempWrittenWord[a] == '\0';
-				if (a > 1) a-=2;
-				move(0, a+1);
-				printw("%c", tempword[a]);
-				move(0,a);
+            tempWrittenWord[a] = tempCh;
+			curX = a;
+			if (tempCh == 127 || tempCh == 8){
+
+				tempWrittenWord[a] = tempword[a];
+				if (a != 0){
+					a-=2;
+				}
+				else a = 0;
+				move(0,0);
+				clrtoeol();
 				refresh();
+				printw(tempWrittenWord.c_str());
+				move(0,0);
+				printw(tempword.c_str());
+				printw(" ");
+				if(i < 29) printw(tempNextWord.c_str());
+				refresh();
+				if(curX != 0) move(0,curX-1);
+				else move(0,0);
 				totalChars--;
 				correctedLetters++;
+				
 			}
 
 		}
@@ -153,9 +163,9 @@ int StartTypingTest(){
 			refresh();
         }
 		y++;
-		tempCh = '\0';
 		tempword = "";
 		tempWrittenWord = "";
+		tempCh = '\0';
 	}
 	wrongLetters -= correctedLetters;
 	totalChars = wrongLetters + score;
@@ -348,7 +358,7 @@ int Highscores(){
 	printw("-----------------------------------------------\n");
 	printw("\n");
 	//hae max 10 riviä scoreja
-	for (int i = 0; !file.eof() && i == 10; i++){
+	for (int i = 0; !file.eof() && i != 10; i++){
 		getline(file,highscore);
 		printw(highscore.c_str());
 		printw("\n");

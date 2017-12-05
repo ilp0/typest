@@ -1,4 +1,12 @@
 #ifndef TypestNetworking
+#include <iostream>
+#include <ncurses.h>
+#include <string>
+#include "string.h"
+#include <fstream>
+#include <vector>
+#include <chrono>
+#include <ctime>
 #define TypestNetworking
 #include <iostream>
 #include <string>
