@@ -27,6 +27,6 @@ or
 
 run program from the root of project folder.
 
-    bin/main
+    bin/typest.out
 
 ![alt text](https://github.com/ilp0/typest/raw/master/screenshot.png "Screenshot")
