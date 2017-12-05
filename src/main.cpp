@@ -196,10 +196,6 @@ int StartTypingTest(){
 	printw("%i", totalChars);
 	refresh();
 	napms(300);
-	printw("\nCorrect letters........");
-	printw("%i", score);
-	refresh();
-	napms(300);
 	printw("\nIncorrect letters......");
 	printw("%i", wrongLetters);
 	refresh();
