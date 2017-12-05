@@ -6,7 +6,7 @@
         {
             "taskName": "Build&run",
             "type": "shell",
-            "command": "make;./bin/main",
+            "command": "make;./bin/typest.out",
             "problemMatcher": []
         }
         {
@@ -17,7 +17,7 @@
         {
             "taskName":"run",
             "type":"shell",
-            "command":"./bin/main",
+            "command":"./bin/typest.out",
             "problemMatcher": []
 
         }

@@ -32,5 +32,6 @@
 *.out
 *.app
 
+
 # Local Scores
 .highscores.txt
