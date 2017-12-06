@@ -1,13 +1,14 @@
 #include "TypestNetworking.h"
-
+//std ja chrono namespace
 using namespace std;
 using namespace chrono;
 
+//wordlisti variablet
 static const int wordcount_fi = 1113, wordcount_en = 5421;
-
 string wordlistEng[wordcount_en];
 string wordlistFin[wordcount_fi];
 
+//user structi
 struct user{
 	string name = "";
 	double wpm = 0;
@@ -35,6 +36,7 @@ int main(){
 	move(0,0); 
 	Menu();
 	clear();
+	//kiitos pelaamisesta ja lopetus
 	printw("Thanks for playing! Goodbye!"); 
 	refresh();
 	napms(2000);
@@ -44,6 +46,7 @@ int main(){
 
 int StartTypingTest(){
 	clear();
+	//valitse sanalista
 	printw("Select your wordlist language:\n 1 = English(default), 2 = Finnish: ");
 	char lang = getch();
 	Wordlist(lang);
@@ -54,21 +57,12 @@ int StartTypingTest(){
 	clear();
 	move(5,5);
 	refresh();
-
+	//variableja testiä varte
 	char tempCh;
-	
 	string tempWrittenWord, tempword, tempNextWord;
-	int score = 0, wrongLetters = 0, fullScore = 0, totalChars = 0, correctedLetters = 0, x = 0, y = 0, curX = 0;
-	/*
-		
-		int wrongLetters = 0;
-		int fullScore = 0;
-		int totalChars = 0;
-		int curX;
-		int correctedLetters = 0;
-		int x = 0, y = 0;
-		*/
+	int score = 0, wrongLetters = 0, totalChars = 0, correctedLetters = 0, x = 0, y = 0, curX = 0;
 	float time = 0;
+
 	//aloita ajastin
 	auto start = high_resolution_clock::now();
 	
@@ -79,23 +73,23 @@ int StartTypingTest(){
 		//HAE RANDOM SANA WORDLISTISTÄ
 		if(lang == '2'){
 			if(i == 0){
-			//jos  on ensimmäinen sana, generoi uusi sanan tempwordiksi
-			tempword =  wordlistFin[rand()%wordcount_fi] + " ";
+				//jos  on ensimmäinen sana, generoi uusi sanan tempwordiksi
+				tempword =  wordlistFin[rand()%wordcount_fi] + " ";
 			} else {
-			//muutoin siirrä tempNextWord tempwordiksi
-			tempword = tempNextWord;
+				//muutoin siirrä tempNextWord tempwordiksi
+				tempword = tempNextWord;
 			}
 			//ja generoi uusi nextword
 			tempNextWord = wordlistFin[rand()%wordcount_fi] + " ";
 		} else {
 			if(i == 0){
-			tempword =  wordlistEng[rand()%wordcount_en] + " ";
+				tempword =  wordlistEng[rand()%wordcount_en] + " ";
 			} else {
-			tempword = tempNextWord;
+				tempword = tempNextWord;
 			}
 			tempNextWord = wordlistEng[rand()%wordcount_en] + " ";
 		}
-		fullScore += tempword.length();
+		//
 		move(1,0);
 		clrtoeol();
 		move(0,0);
@@ -120,8 +114,8 @@ int StartTypingTest(){
 			totalChars++;
             tempWrittenWord[a] = tempCh;
 			curX = a;
+			//jos backspace tai delete
 			if (tempCh == 127 || tempCh == 8){
-
 				tempWrittenWord[a] = tempword[a];
 				if (a != 0){
 					a-=2;
@@ -140,14 +134,15 @@ int StartTypingTest(){
 				else move(0,0);
 				totalChars--;
 				correctedLetters++;
-				
 			}
-
 		}
+
 		if(y == 10) {
 			x += 15;
 			y = 0;
 		}
+
+		//printtaa oikeat/väärät kirjamiet sanassa
 		move(y+2, x);
 		for (int c = 0; c < tempword.size(); c++){
 			if (tempword[c] == tempWrittenWord[c]) {
@@ -162,15 +157,19 @@ int StartTypingTest(){
 			attroff(COLOR_PAIR(1));
 			refresh();
         }
+
 		y++;
+		//resettaa pari variablee
 		tempword = "";
 		tempWrittenWord = "";
 		tempCh = '\0';
 	}
+
 	wrongLetters -= correctedLetters;
 	//lopeta ajastin
     auto end = high_resolution_clock::now();
     time = duration_cast<seconds>(end - start).count();
+	//laske wpm
 	double grossWPM = (totalChars/5) / (time / 60);
 	double netWPM = grossWPM - ((wrongLetters/5)/(time/60));
 	double accuracy = (netWPM/grossWPM) * 100;
@@ -218,6 +217,7 @@ int StartTypingTest(){
 	napms(500);
 	printw("RANK: ");
 	napms(1000);
+	//kirjoita rankki
 	if (currentUser.score <= 10000) printw("F");
 	if (currentUser.score <= 20000 && currentUser.score > 10000) printw("D");
 	if (currentUser.score <= 27000 && currentUser.score > 20000) printw("C");

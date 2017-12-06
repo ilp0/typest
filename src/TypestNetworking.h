@@ -1,3 +1,4 @@
+//kaikki definet
 #ifndef TypestNetworking
 #include <iostream>
 #include <ncurses.h>
