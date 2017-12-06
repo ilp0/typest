@@ -164,15 +164,15 @@ int StartTypingTest(){
 		tempWrittenWord = "";
 		tempCh = '\0';
 	}
-
-	wrongLetters -= correctedLetters;
 	//lopeta ajastin
     auto end = high_resolution_clock::now();
     time = duration_cast<seconds>(end - start).count();
 	//laske wpm
 	double grossWPM = (totalChars/5) / (time / 60);
 	double netWPM = grossWPM - ((wrongLetters/5)/(time/60));
-	double accuracy = (netWPM/grossWPM) * 100;
+	if(netWPM < 1) netWPM = 1;
+	double accuracy = 0;
+	accuracy = (netWPM/grossWPM) * 100;
 	currentUser.wpm = grossWPM;
 	currentUser.accuracy = accuracy;
 	currentUser.score = (totalChars - wrongLetters) / (time / 60) * accuracy;
