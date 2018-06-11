@@ -7,7 +7,7 @@ int GetWebHighscores(){
 	clear();
 	string line;
 	//hakee servulta highscoret
-	system("wget http://34.241.121.194/typest/typest_get.php");
+	system("wget http://loikkanen.io/typest/typest_get.php");
 	//printtaa
 	printw("                   -------------------------------\n");
 	printw("                   |     TOP 10 ONLINE SCORES    |\n");
@@ -43,7 +43,7 @@ int GetWebHighscores(){
 int SendWebHighscores(string language, string name, string wpm, string acc, string score) {
     //tee url scoreista yms.
 		//php puolella $_GET
-		string command = "wget \"http://34.241.121.194/typest/typest_send.php?language=";
+		string command = "wget \"http://loikkanen.io/typest/typest_send.php?language=";
 		command += language;
 		command += "&name=";
 		command += name;
